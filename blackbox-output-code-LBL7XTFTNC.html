@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticker Shop - Cool Stickers Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #searchInput {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 25px;
+            width: 300px;
+            outline: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .filter-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(255,255,255,0.4);
+            transform: translateY(-2px);
+        }
+
+        .stickers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .sticker-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sticker-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .sticker-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .sticker-image {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sticker-image:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .sticker-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .sticker-category {
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .price {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #4ecdc4;
+            margin-top: 10px;
+        }
+
+        .add-to-cart {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(78,205,196,0.4);
+        }
+
+        @media (max-width: 768px) {
+            .stickers-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            #searchInput {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Sticker Shop</h1>
+            <p class="subtitle">Find your perfect sticker for every mood!</p>
+        </header>
+
+        <div class="search-filter">
+            <input type="text" id="searchInput" placeholder="🔍 Search stickers...">
+            <button class="filter-btn active" data-category="all">All</button>
+            <button class="filter-btn" data-category="funny">Funny</button>
+            <button class="filter-btn" data-category="cute">Cute</button>
+            <button class="filter-btn" data-category="gaming">Gaming</button>
+            <button class="filter-btn" data-category="music">Music</button>
+            <button class="filter-btn" data-category="food">Food</button>
+        </div>
+
+        <div class="stickers-grid" id="stickersGrid">
+            <!-- Stickers will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const stickers = [
+            { id: 1, name: "Happy Cat", category: "cute", price: 2.99, emoji: "😻", color: "#ff9ff3" },
+            { id: 2, name: "Dancing Dog", category: "funny", price: 1.99, emoji: "🐶💃", color: "#54a0ff" },
+            { id: 3, name: "Pizza Slice", category: "food", price: 1.49, emoji: "🍕", color: "#ff6b6b" },
+            { id: 4, name: "Game Controller", category: "gaming", price: 2.49, emoji: "🎮", color: "#5f27cd" },
+            { id: 5, name: "Rock Music", category: "music", price: 1.79, emoji: "🎸", color: "#00b894" },
+            { id: 6, name: "Ice Cream", category: "food", price: 1.29, emoji: "🍦", color: "#fdcb6e" },
+            { id: 7, name: "Sleepy Owl", category: "cute", price: 2.19, emoji: "🦉😴", color: "#6c5ce7" },
+            { id: 8, name: "Funny Monkey", category: "funny", price: 1.89, emoji: "🐒😂", color: "#fd79a8" },
+            { id: 9, name: "Headphones", category: "music", price: 2.69, emoji: "🎧", color: "#00cec9" },
+            { id: 10, name: "Rocket Ship", category: "gaming", price: 2.99, emoji: "🚀", color: "#e17055" },
+            { id: 11, name: "Burger Time", category: "food", price: 1.69, emoji: "🍔", color: "#ff7675" },
+            { id: 12, name: "Panda Love", category: "cute", price: 2.39, emoji: "🐼💕", color: "#00b894" }
+        ];
+
+        function createStickerCard(sticker) {
+            return `
+                <div class="sticker-card" data-category="${sticker.category}" data-name="${sticker.name.toLowerCase()}">
+                    <div class="sticker-image" style="background: linear-gradient(135deg, ${sticker.color}, ${sticker.color}cc); display: flex; align-items: center; justify-content: center; font-size: 3em;">
+                        ${sticker.emoji}
+                    </div>
+                    <div class="sticker-name">${sticker.name}</div>
+                    <div class="sticker-category">${sticker.category.toUpperCase()}</div>
+                    <div class="price">$${sticker.price}</div>
+                    <button class="add-to-cart" onclick="addToCart(${sticker.id})">Add to Cart 🛒</button>
+                </div>
+            `;
+        }
+
+        function renderStickers(stickersToShow) {
+            const grid = document.getElementById('stickersGrid');
+            grid.innerHTML = stickersToShow.map(createStickerCard).join('');
+        }
+
+        function filterStickers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.category;
+
+            let filtered = stickers;
+
+            if (activeFilter !== 'all') {
+                filtered = filtered.filter(sticker => sticker.category === activeFilter);
+            }
+
+            if (searchTerm) {
+                filtered = filtered.filter(sticker => 
+                    sticker.name.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            renderStickers(filtered);
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterStickers);
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                filterStickers();
+            });
+        });
+
+        function addToCart(id) {
+            const sticker = stickers.find(s => s.id === id);
+            alert(`✅ Added "${sticker.name}" to cart! $${sticker.price}`);
+        }
+
+        // Initial render
+        renderStickers(stickers);
+    </script>
+</body>
+</html>
